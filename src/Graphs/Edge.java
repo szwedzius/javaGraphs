@@ -1,5 +1,5 @@
 public class Edge {
-    private int source, destination, weight;
+    private int source, destination, weight = 0;
 
     public Edge(int source, int destination) {
         this.source = source;
@@ -16,23 +16,13 @@ public class Edge {
         return source;
     }
 
-    public void setSource(int source) {
-        this.source = source;
-    }
-
     public int getDestination() {
         return destination;
     }
 
-    public void setDestination(int destination) {
-        this.destination = destination;
-    }
 
     public int getWeight() {
         return weight;
     }
 
-    public void setWeight(int weight) {
-        this.weight = weight;
-    }
 }

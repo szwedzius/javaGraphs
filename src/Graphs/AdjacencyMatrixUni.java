@@ -1,3 +1,4 @@
+import Exceptions.NoEdgeInGraphException;
 import Exceptions.NoVertexInGraphException;
 import Exceptions.WrongGraphTypeException;
 
@@ -26,34 +27,40 @@ public class AdjacencyMatrixUni implements Graph {
         adjMatrix[source][destination] = 1;
     }
 
-    public void removeVertex(int vertex) throws Exception {
+    public void removeVertex(int vertex) throws NoVertexInGraphException {
         if (adjMatrix[0][vertex] != 1) {
             throw new NoVertexInGraphException();
         }
-        adjMatrix[0][vertex] = 0;
-        adjMatrix[vertex][0] = 0;
+        for (int i = 0; i < vertices; i++) {
+            adjMatrix[i][vertex] = 0;
+            adjMatrix[vertex][i] = 0;
+        }
+
     }
 
-    public void removeEdge(int source, int destination) throws NoVertexInGraphException {
-        if (adjMatrix[0][source] != 1 || adjMatrix[0][destination] != 1) {
-            throw new NoVertexInGraphException();
+    public void removeEdge(int source, int destination) throws NoEdgeInGraphException {
+        if (adjMatrix[destination][source] != 1 || adjMatrix[source][destination] != 1) {
+            throw new NoEdgeInGraphException();
         }
         adjMatrix[source][destination] = 0;
         adjMatrix[destination][source] = 0;
     }
 
     @Override
-    public void removeEdge(Edge edge) throws NoVertexInGraphException {
+    public void removeEdge(Edge edge) throws NoEdgeInGraphException, WrongGraphTypeException {
         int source = edge.getSource();
         int destination = edge.getDestination();
-        if (adjMatrix[0][source] != 1 || adjMatrix[0][destination] != 1) {
-            throw new NoVertexInGraphException();
+        if (edge.getWeight() != 0) {
+            throw new WrongGraphTypeException();
+        }
+        if (adjMatrix[destination][source] != 1 || adjMatrix[source][destination] != 1) {
+            throw new NoEdgeInGraphException();
         }
         adjMatrix[source][destination] = 0;
         adjMatrix[destination][source] = 0;
     }
 
-    public List<Integer> getVertices() {
+    public List<Integer> getVertices() throws NoVertexInGraphException {
         return getNeighbors(0);
     }
 
@@ -61,16 +68,18 @@ public class AdjacencyMatrixUni implements Graph {
         List<Edge> result = new LinkedList<>();
         for (int i = 0; i < vertices; i++) {
             for (int j = 0; j <= i; j++) {
-                if (adjMatrix[i][j] == 1)
-                    result.add(new Edge(i, j));
+                if (adjMatrix[i][j] == 1) result.add(new Edge(i, j));
             }
         }
         return result;
     }
 
-    public List<Integer> getNeighbors(int vertex) {
+    public List<Integer> getNeighbors(int vertex) throws NoVertexInGraphException {
         List<Integer> result = new LinkedList<>();
-        for (int i = 0; i < vertices; i++) {
+        if(vertex>vertices){
+            throw new NoVertexInGraphException();
+        }
+        for (int i = 1; i < vertices; i++) {
             if (adjMatrix[vertex][i] == 1) {
                 result.add(i);
             }
@@ -86,7 +95,7 @@ public class AdjacencyMatrixUni implements Graph {
         return adjMatrix[vertex1][vertex2] == 1;
     }
 
-    public int getDegree(int vertex) {
+    public int getDegree(int vertex) throws NoVertexInGraphException {
         return getNeighbors(vertex).size();
     }
 
@@ -95,7 +104,19 @@ public class AdjacencyMatrixUni implements Graph {
     }
 
     public List<Integer> BFS(int start_vertex) {
-        return null;
+        Queue<Integer> bfsQueue = new LinkedList<>();
+        bfsQueue.add(start_vertex);
+        List<Integer> visited = new LinkedList<>();
+        while (!bfsQueue.isEmpty()) {
+            int currentVertex = bfsQueue.poll();
+            visited.add(currentVertex);
+            for (int i = 1; i < vertices; i++) {
+                if (!visited.contains(i) && adjMatrix[currentVertex][i] == 1) {
+                    bfsQueue.add(i);
+                }
+            }
+        }
+        return visited;
     }
 
     @Override

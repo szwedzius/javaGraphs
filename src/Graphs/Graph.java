@@ -1,3 +1,4 @@
+import Exceptions.NoEdgeInGraphException;
 import Exceptions.NoVertexInGraphException;
 import Exceptions.WrongGraphTypeException;
 
@@ -14,15 +15,15 @@ public interface Graph {
 
     void removeVertex(int vertex) throws Exception;
 
-    void removeEdge(int source, int destination) throws NoVertexInGraphException;
+    void removeEdge(int source, int destination) throws NoEdgeInGraphException;
 
-    void removeEdge(Edge edge) throws NoVertexInGraphException;
+    void removeEdge(Edge edge) throws NoEdgeInGraphException, WrongGraphTypeException;
 
-    List<Integer> getVertices();
+    List<Integer> getVertices() throws NoVertexInGraphException;
 
     List<Edge> getEdges();
 
-    List<Integer> getNeighbors(int vertex);
+    List<Integer> getNeighbors(int vertex) throws NoVertexInGraphException;
 
     boolean isVertex(int vertex);
 
@@ -34,7 +35,7 @@ public interface Graph {
         throw new WrongGraphTypeException();
     }
 
-    int getDegree(int vertex);
+    int getDegree(int vertex) throws NoVertexInGraphException;
 
     List<Integer> DFS(int start_vertex);
 
