@@ -100,7 +100,19 @@ public class AdjacencyMatrixUni implements Graph {
     }
 
     public List<Integer> DFS(int start_vertex) {
-        return null;
+        Stack<Integer> bfsQueue = new Stack<>();
+        bfsQueue.add(start_vertex);
+        List<Integer> visited = new LinkedList<>();
+        while (!bfsQueue.isEmpty()) {
+            int currentVertex = bfsQueue.pop();
+            visited.add(currentVertex);
+            for (int i = 1; i < vertices; i++) {
+                if (!visited.contains(i) && adjMatrix[currentVertex][i] == 1) {
+                    bfsQueue.add(i);
+                }
+            }
+        }
+        return visited;
     }
 
     public List<Integer> BFS(int start_vertex) {
